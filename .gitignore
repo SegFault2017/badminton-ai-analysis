@@ -32,3 +32,4 @@ weights/*
 Thumbs.db
 .idea/
 .vscode/
+graphify-out/

@@ -1,0 +1,294 @@
+{
+  "track": "",
+  "attempts": [
+    {
+      "lesson": "0001",
+      "title": "Images as arrays",
+      "drill": "main",
+      "at": "2026-06-29T00:03:01.886181+00:00",
+      "score": 5,
+      "total": 6,
+      "percent": 83,
+      "answers": [
+        {
+          "q": 1,
+          "correct": true,
+          "picked": "the OpenCV library",
+          "answer": "the OpenCV library"
+        },
+        {
+          "q": 2,
+          "correct": true,
+          "picked": "1280",
+          "answer": "1280"
+        },
+        {
+          "q": 3,
+          "correct": true,
+          "picked": "BGR",
+          "answer": "BGR"
+        },
+        {
+          "q": 4,
+          "correct": true,
+          "picked": "a cropped rectangle",
+          "answer": "a cropped rectangle"
+        },
+        {
+          "q": 5,
+          "correct": false,
+          "picked": "one",
+          "answer": "two"
+        },
+        {
+          "q": 6,
+          "correct": true,
+          "picked": "reads one frame per loop",
+          "answer": "reads one frame per loop"
+        }
+      ]
+    },
+    {
+      "lesson": "0002",
+      "title": "Template matching & rally detection",
+      "drill": "main",
+      "at": "2026-06-29T00:45:46.249451+00:00",
+      "score": 6,
+      "total": 6,
+      "percent": 100,
+      "answers": [
+        {
+          "q": 1,
+          "correct": true,
+          "picked": "how similar two images are",
+          "answer": "how similar two images are"
+        },
+        {
+          "q": 2,
+          "correct": true,
+          "picked": "a single similarity score",
+          "answer": "a single similarity score"
+        },
+        {
+          "q": 3,
+          "correct": true,
+          "picked": "a closer match",
+          "answer": "a closer match"
+        },
+        {
+          "q": 4,
+          "correct": true,
+          "picked": "skips it entirely",
+          "answer": "skips it entirely"
+        },
+        {
+          "q": 5,
+          "correct": true,
+          "picked": "shape-based and faster",
+          "answer": "shape-based and faster"
+        },
+        {
+          "q": 6,
+          "correct": true,
+          "picked": "five",
+          "answer": "five"
+        }
+      ]
+    },
+    {
+      "lesson": "0003",
+      "title": "Pose keypoints (COCO-17)",
+      "drill": "main",
+      "at": "2026-06-29T01:02:10.835534+00:00",
+      "score": 6,
+      "total": 6,
+      "percent": 100,
+      "answers": [
+        {
+          "q": 1,
+          "correct": true,
+          "picked": "named body-point coordinates",
+          "answer": "named body-point coordinates"
+        },
+        {
+          "q": 2,
+          "correct": true,
+          "picked": "seventeen",
+          "answer": "seventeen"
+        },
+        {
+          "q": 3,
+          "correct": true,
+          "picked": "the x and y",
+          "answer": "the x and y"
+        },
+        {
+          "q": 4,
+          "correct": true,
+          "picked": "both output COCO-17",
+          "answer": "both output COCO-17"
+        },
+        {
+          "q": 5,
+          "correct": true,
+          "picked": "the two ankles",
+          "answer": "the two ankles"
+        },
+        {
+          "q": 6,
+          "correct": true,
+          "picked": "zeroes it out",
+          "answer": "zeroes it out"
+        }
+      ]
+    },
+    {
+      "lesson": "0004",
+      "title": "Detection & tracking",
+      "drill": "main",
+      "at": "2026-06-29T01:33:01.947992+00:00",
+      "score": 5,
+      "total": 6,
+      "percent": 83,
+      "answers": [
+        {
+          "q": 1,
+          "correct": false,
+          "picked": "players vs the ball",
+          "answer": "per-frame vs across frames"
+        },
+        {
+          "q": 2,
+          "correct": true,
+          "picked": "catch faint detections",
+          "answer": "catch faint detections"
+        },
+        {
+          "q": 3,
+          "correct": true,
+          "picked": "nearest the predicted spot",
+          "answer": "nearest the predicted spot"
+        },
+        {
+          "q": 4,
+          "correct": true,
+          "picked": "continue the last motion",
+          "answer": "continue the last motion"
+        },
+        {
+          "q": 5,
+          "correct": true,
+          "picked": "rejected as an outlier",
+          "answer": "rejected as an outlier"
+        },
+        {
+          "q": 6,
+          "correct": true,
+          "picked": "by court half (y)",
+          "answer": "by court half (y)"
+        }
+      ]
+    },
+    {
+      "lesson": "0005",
+      "title": "Homography & court mapping",
+      "drill": "main",
+      "at": "2026-06-29T01:50:18.444424+00:00",
+      "score": 6,
+      "total": 6,
+      "percent": 100,
+      "answers": [
+        {
+          "q": 1,
+          "correct": true,
+          "picked": "perspective distorts scale",
+          "answer": "perspective distorts scale"
+        },
+        {
+          "q": 2,
+          "correct": true,
+          "picked": "a plane-to-plane mapping",
+          "answer": "a plane-to-plane mapping"
+        },
+        {
+          "q": 3,
+          "correct": true,
+          "picked": "four corners",
+          "answer": "four corners"
+        },
+        {
+          "q": 4,
+          "correct": true,
+          "picked": "court metres",
+          "answer": "court metres"
+        },
+        {
+          "q": 5,
+          "correct": true,
+          "picked": "real speed & distance",
+          "answer": "real speed & distance"
+        },
+        {
+          "q": 6,
+          "correct": true,
+          "picked": "drawing court lines",
+          "answer": "drawing court lines"
+        }
+      ]
+    },
+    {
+      "lesson": "0006",
+      "title": "Full pipeline (interleaved)",
+      "drill": "main",
+      "at": "2026-06-29T02:00:43.653840+00:00",
+      "score": 7,
+      "total": 7,
+      "percent": 100,
+      "answers": [
+        {
+          "q": 1,
+          "correct": true,
+          "picked": "the grayscale template match",
+          "answer": "the grayscale template match"
+        },
+        {
+          "q": 2,
+          "correct": true,
+          "picked": "the two ankles",
+          "answer": "the two ankles"
+        },
+        {
+          "q": 3,
+          "correct": true,
+          "picked": "it exceeds the jump gate",
+          "answer": "it exceeds the jump gate"
+        },
+        {
+          "q": 4,
+          "correct": true,
+          "picked": "court metres",
+          "answer": "court metres"
+        },
+        {
+          "q": 5,
+          "correct": true,
+          "picked": "court-view → pose → metres",
+          "answer": "court-view → pose → metres"
+        },
+        {
+          "q": 6,
+          "correct": true,
+          "picked": "court metres",
+          "answer": "court metres"
+        },
+        {
+          "q": 7,
+          "correct": true,
+          "picked": "the court midline (6.7 m)",
+          "answer": "the court midline (6.7 m)"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-06-29T02:00:43.653955+00:00"
+}

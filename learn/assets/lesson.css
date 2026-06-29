@@ -1,0 +1,187 @@
+/* ============================================================================
+ * lesson.css — shared look for every grammar lesson.
+ * Restyle ALL lessons by editing this one file.
+ * Consolidated from the original per-lesson <style> blocks (lessons 1,3,4,5,5b).
+ * ========================================================================== */
+:root {
+  --ink: #1a1a1a;
+  --paper: #fdfcf9;
+  --accent: #7a1f1f;
+  --muted: #6b6b6b;
+  --good: #1f6b3a;
+  --bad: #9b2222;
+  --rule: #e8e4da;
+  --blue: #33689b;
+  /* surfaces (promoted from hardcoded literals; light values unchanged) */
+  --surface: #f4f1ea;
+  --surface-good: #eef4ef;
+  --surface-alt: #f0ede5;
+  --quiz-bg: #ffffff;
+  --opt-bg: #fafafa;
+  --opt-border: #cccccc;
+  --good-bg: #e6f4ea;
+  --bad-bg: #f7e6e6;
+  --ask-bg: #fbf6e9;
+  --ask-border: #c9a23a;
+  --btn-shadow: rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  line-height: 1.6;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+}
+h1 { font-size: 2rem; line-height: 1.15; margin-bottom: 0.2rem; }
+h2 { font-size: 1.25rem; margin-top: 2.5rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.3rem; }
+h3 { margin: 0.1rem 0 0.5rem; font-size: 1rem; }
+a { color: var(--accent); }
+
+/* Home button — fixed top-left, back to the lesson index */
+.home-btn {
+  position: fixed; top: 1rem; left: 1rem; z-index: 100;
+  display: inline-block; padding: 0.35rem 0.7rem;
+  background: var(--paper); color: var(--accent);
+  border: 1px solid var(--rule); border-radius: 6px;
+  font-family: Georgia, serif; font-size: 0.9rem; text-decoration: none;
+  box-shadow: 0 1px 3px var(--btn-shadow);
+}
+.home-btn:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+/* Lesson header / framing */
+.kicker { color: var(--accent); font-variant: small-caps; letter-spacing: 0.08em; font-size: 0.95rem; }
+.mission { color: var(--muted); font-style: italic; font-size: 0.95rem; margin-top: 0.4rem; }
+
+/* Boxes */
+.rule-box {
+  background: var(--surface); border-left: 4px solid var(--accent);
+  padding: 1rem 1.2rem; margin: 1.2rem 0; border-radius: 2px;
+}
+.mando {
+  background: var(--surface-good); border-left: 4px solid var(--good);
+  padding: 0.8rem 1rem; margin: 1rem 0; border-radius: 2px; font-size: 0.96rem;
+}
+
+/* Two-column comparison cards (will/going-to, pp/ps, cont/simp …) */
+.twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+.card { border: 1px solid var(--rule); border-radius: 6px; padding: 0.8rem 1rem; }
+/* Accent variants — first column blue, second column red, by convention */
+.card.will, .card.pp, .card.cont { border-top: 3px solid var(--blue); }
+.card.gt, .card.ps, .card.simp { border-top: 3px solid var(--accent); }
+.card.will h3, .card.pp h3, .card.cont h3 { color: var(--blue); }
+.card.gt h3, .card.ps h3, .card.simp h3 { color: var(--accent); }
+
+/* State-verb chips */
+.stative { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.stative span {
+  background: var(--surface-alt); border: 1px solid var(--rule); border-radius: 4px;
+  padding: 0.15rem 0.5rem; font-size: 0.9rem; font-family: Menlo, monospace;
+}
+
+/* Tables (spelling rules etc.) */
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.98rem; }
+th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--rule); }
+th { font-variant: small-caps; color: var(--accent); }
+
+/* Inline code / examples / corrections */
+code, .ex {
+  font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 0.88em;
+  background: var(--surface-alt); padding: 0.1em 0.35em; border-radius: 3px;
+}
+.wrong { color: var(--bad); text-decoration: line-through; }
+.right { color: var(--good); font-weight: bold; }
+cite { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; }
+
+/* Drill widget (mounted by drills.js into #quiz / #progress) */
+.quiz { background: var(--quiz-bg); border: 1px solid var(--rule); border-radius: 6px; padding: 1.1rem 1.2rem; margin: 1.1rem 0; }
+.quiz .q { font-weight: bold; margin-bottom: 0.7rem; }
+.quiz .ctx { font-weight: normal; color: var(--muted); font-style: italic; }
+.quiz .opts { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz button.opt {
+  text-align: left; font-family: inherit; font-size: 1rem; color: var(--ink);
+  padding: 0.55rem 0.8rem; border: 1px solid var(--opt-border); background: var(--opt-bg);
+  border-radius: 5px; cursor: pointer; transition: all 0.12s;
+}
+.quiz button.opt:hover { border-color: var(--accent); }
+.quiz button.opt.sel { border-color: var(--blue); box-shadow: inset 0 0 0 1px var(--blue); }
+.quiz button.opt.correct { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+.quiz button.opt.incorrect { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.quiz button.opt:disabled { cursor: default; opacity: 0.85; }
+.feedback { margin-top: 0.7rem; font-size: 0.95rem; min-height: 1.2rem; }
+.feedback.show-good { color: var(--good); }
+.feedback.show-bad { color: var(--bad); }
+.progress { color: var(--muted); font-size: 0.85rem; margin-top: 2rem; text-align: center; }
+
+/* Teacher prompt + footer */
+.ask { background: var(--ask-bg); border: 1px dashed var(--ask-border); padding: 0.9rem 1.1rem; border-radius: 6px; margin-top: 2.5rem; }
+footer { margin-top: 3rem; border-top: 1px solid var(--rule); padding-top: 1rem; color: var(--muted); font-size: 0.85rem; }
+
+/* Error/index banner used by the template */
+.banner { max-width: 42rem; margin: 3rem auto; padding: 1rem 1.25rem; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); }
+
+/* Diagrams (inline SVG figures) — theme-aware via CSS vars used inside the SVG */
+figure.diagram { margin: 1.6rem 0; text-align: center; }
+figure.diagram svg { max-width: 100%; height: auto; }
+figure.diagram figcaption { color: var(--muted); font-size: 0.85rem; font-style: italic; margin-top: 0.5rem; }
+figure.diagram .d-label { font-family: Georgia, serif; }
+figure.diagram .d-mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
+
+/* Exam engine (mounted by exam.js into #exam) */
+.exam-topic { margin-top: 2rem; }
+.fillin {
+  width: 100%; font-family: inherit; font-size: 1rem; color: var(--ink);
+  background: var(--opt-bg); border: 1px solid var(--opt-border);
+  border-radius: 5px; padding: 0.5rem 0.7rem; margin-top: 0.3rem;
+}
+.fillin:focus { outline: none; border-color: var(--accent); }
+.exam-error {
+  background: var(--bad-bg); border: 1px solid var(--bad); color: var(--bad);
+  padding: 0.6rem 0.9rem; border-radius: 5px; margin: 0.8rem 0; font-size: 0.92rem;
+}
+.exam-topics { color: var(--muted); font-size: 0.9rem; margin: 0.6rem 0 1rem; }
+.exam-bar {
+  position: sticky; bottom: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  margin-top: 2rem; padding: 0.7rem 1rem;
+  background: var(--quiz-bg); border: 1px solid var(--rule); border-radius: 8px;
+  box-shadow: 0 -2px 8px var(--btn-shadow);
+}
+.exam-bar #exam-submit {
+  max-width: 12rem; background: var(--accent); color: var(--paper); border-color: var(--accent);
+  border-radius: 999px; padding: 0.6rem 1.4rem; font-weight: 600; letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px var(--btn-shadow);
+}
+
+/* Dark theme — follows the OS setting. Only variable values change; no layout. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8e4da;
+    --paper: #1a1815;
+    --accent: #e0918c;
+    --muted: #9a948a;
+    --good: #7fce9b;
+    --bad: #e8918c;
+    --rule: #3a352e;
+    --blue: #84b6e8;
+    --surface: #24211c;
+    --surface-good: #1f2a22;
+    --surface-alt: #2a261f;
+    --quiz-bg: #201d18;
+    --opt-bg: #2a261f;
+    --opt-border: #4a443a;
+    --good-bg: #1f3326;
+    --bad-bg: #3a2420;
+    --ask-bg: #2a2518;
+    --ask-border: #8a7330;
+    --btn-shadow: rgba(0,0,0,0.4);
+  }
+}
+
+@media print {
+  body { background: #fff; }
+  .quiz button.opt, .exam-bar, .banner { display: none; }
+  a { color: var(--ink); text-decoration: none; }
+}

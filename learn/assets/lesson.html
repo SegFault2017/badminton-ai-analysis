@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson</title>
+  <link rel="stylesheet" href="/assets/lesson.css" />
+  <script src="/assets/marked.min.js"></script>
+  <script src="/assets/js-yaml.min.js"></script>
+  <script src="/assets/drill-tracker.js"></script>
+  <script src="/assets/drills.js"></script>
+  <script src="/assets/exam.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // Resolve an md path to a workspace-root-absolute URL. The page lives at
+    // /assets/lesson.html, so a relative fetch would wrongly resolve under
+    // /assets/. Always anchor to root.
+    function mdUrl(md) { return md.charAt(0) === "/" ? md : "/" + md; }
+
+    // Split leading YAML front-matter from the body.
+    function splitFrontMatter(text) {
+      const m = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(text);
+      if (!m) return { meta: {}, body: text };
+      return { meta: jsyaml.load(m[1]) || {}, body: m[2] };
+    }
+
+    function banner(msg) {
+      const d = document.createElement("div");
+      d.className = "banner";
+      d.innerHTML = msg;
+      return d;
+    }
+
+    // List the lesson files (names like "0004-will-vs-going-to.md") under /lessons/.
+    async function listLessons() {
+      const res = await fetch("/lessons/");
+      const txt = await res.text();
+      return [...txt.matchAll(/href="([^"]+\.md)"/g)]
+        .map((m) => m[1].split("/").pop())
+        .sort();
+    }
+
+    // The leading id of a lesson file: "0004-will-vs-going-to.md" -> "0004".
+    function idOf(name) {
+      const m = /^([0-9]+[a-z]?)-/.exec(name);
+      return m ? m[1] : name.replace(/\.md$/, "");
+    }
+
+    // Resolve a short id (e.g. "0004" or "0005b") to its lessons/ path.
+    async function pathForId(id) {
+      const names = await listLessons();
+      const hit = names.find((n) => idOf(n) === id);
+      return hit ? "lessons/" + hit : null;
+    }
+
+    // Exams live in /exams/ with names like "E001-conditionals.md".
+    function examIdOf(name) {
+      const m = /^(E[0-9]+)-/i.exec(name);
+      return m ? m[1] : name.replace(/\.md$/, "");
+    }
+
+    async function listExams() {
+      try {
+        const res = await fetch("/exams/");
+        const txt = await res.text();
+        return [...txt.matchAll(/href="([^"]+\.md)"/g)]
+          .map((m) => m[1].split("/").pop())
+          .filter((n) => /\.md$/.test(n) && !/\.questions\.yaml$/.test(n))
+          .sort();
+      } catch (e) { return []; }
+    }
+
+    async function pathForExamId(id) {
+      const names = await listExams();
+      const hit = names.find((n) => examIdOf(n) === id);
+      return hit ? "exams/" + hit : null;
+    }
+
+    // The YAML sidecar paired to an exam cover, by shared stem.
+    function sidecarUrlFor(md) { return md.replace(/\.md$/, ".questions.yaml"); }
+
+    async function renderExamIndex(root) {
+      const h = document.createElement("h1");
+      h.textContent = "Exams";
+      root.appendChild(h);
+      const names = await listExams();
+      if (!names.length) {
+        root.appendChild(banner("No exams yet. Ask your teacher to generate one."));
+        return;
+      }
+      const ul = document.createElement("ul");
+      names.forEach((name) => {
+        ul.innerHTML += `<li><a href="?exam=${examIdOf(name)}">${name}</a></li>`;
+      });
+      root.appendChild(ul);
+      const back = document.createElement("p");
+      back.innerHTML = '<a href="/assets/lesson.html">&larr; Lessons</a>';
+      root.appendChild(back);
+    }
+
+    async function renderIndex(root) {
+      const h = document.createElement("h1");
+      h.textContent = "Lessons";
+      root.appendChild(h);
+      try {
+        const names = await listLessons();
+        if (!names.length) throw new Error("none");
+        const ul = document.createElement("ul");
+        names.forEach((name) => {
+          ul.innerHTML += `<li><a href="?id=${idOf(name)}">${name}</a></li>`;
+        });
+        root.appendChild(ul);
+        const more = document.createElement("p");
+        more.innerHTML = '<a href="?exams">Exams &rarr;</a>';
+        root.appendChild(more);
+      } catch (e) {
+        root.appendChild(banner("No lesson selected. Open with " +
+          "<code>?id=0001</code> (or <code>?md=lessons/0001-name.md</code>)."));
+      }
+    }
+
+    async function renderLesson(root, md) {
+      let text;
+      try {
+        const res = await fetch(mdUrl(md));
+        if (!res.ok) throw new Error(res.status);
+        text = await res.text();
+      } catch (e) {
+        root.appendChild(banner(
+          "Could not load <code>" + md + "</code>. Open this page through the " +
+          "local server (<code>python3 assets/serve.py</code>), not as a file://."));
+        return;
+      }
+
+      let meta, body;
+      try { ({ meta, body } = splitFrontMatter(text)); }
+      catch (e) {
+        root.appendChild(banner("Front-matter parse error: " + e.message));
+        meta = {}; body = text;
+      }
+
+      document.title = meta.title || md.split("/").pop();
+
+      // A persistent Home link back to the lesson index. Added here (not in the
+      // index render) so it appears on lesson pages only.
+      const home = document.createElement("a");
+      home.href = "/assets/lesson.html";
+      home.className = "home-btn";
+      home.setAttribute("aria-label", "Back to all lessons");
+      home.innerHTML = "⌂ Home";
+      document.body.appendChild(home);
+
+      // Body is rendered as Markdown; raw HTML in the body (cards, rule boxes,
+      // the #quiz / #progress mount points) passes through untouched.
+      const article = document.createElement("article");
+      article.innerHTML = marked.parse(body || "");
+      root.appendChild(article);
+
+      // Wire up the drill if the lesson declares one.
+      const lessonId = meta.lesson_id || md.split("/").pop().replace(/\.md$/, "");
+      if (global_DrillTracker()) {
+        DrillTracker.init({ lesson: lessonId, title: meta.drill_title || meta.title || lessonId });
+      }
+      if (Array.isArray(meta.drills) && meta.drills.length && global_Drills()) {
+        Drills.mount({
+          questions: meta.drills,
+          drill: meta.drill || "main",
+        });
+      }
+
+      // The content is rendered asynchronously, so the browser's native
+      // jump-to-#hash has already fired (and missed) by now. Re-run it once the
+      // target element exists — this is what makes ?id=0006#cheat-sheet land on
+      // the cheat-sheet rather than the top of the page.
+      scrollToHash();
+    }
+
+    async function renderExam(root, md) {
+      // 1) The cover .md: title + instructions body.
+      let text;
+      try {
+        const res = await fetch(mdUrl(md));
+        if (!res.ok) throw new Error(res.status);
+        text = await res.text();
+      } catch (e) {
+        root.appendChild(banner(
+          "Could not load <code>" + md + "</code>. Open through the local server " +
+          "(<code>python3 assets/serve.py</code>)."));
+        return;
+      }
+      let meta, body;
+      try { ({ meta, body } = splitFrontMatter(text)); }
+      catch (e) { root.appendChild(banner("Front-matter parse error: " + e.message)); return; }
+
+      // 2) The paired YAML sidecar: pass_mark + questions.
+      let sidecar;
+      try {
+        const res = await fetch(mdUrl(sidecarUrlFor(md)));
+        if (!res.ok) throw new Error(res.status);
+        sidecar = jsyaml.load(await res.text()) || {};
+      } catch (e) {
+        root.appendChild(banner(
+          "Exam questions not found for <code>" + (meta.exam_id || md) + "</code>. " +
+          "Expected a sidecar at <code>" + sidecarUrlFor(md) + "</code>."));
+        return;
+      }
+      const questions = Array.isArray(sidecar.questions) ? sidecar.questions : [];
+      if (!questions.length) {
+        root.appendChild(banner("The exam sidecar has no <code>questions</code>."));
+        return;
+      }
+
+      document.title = meta.title || md.split("/").pop();
+
+      // Home button -> the EXAM index (stay in exam context).
+      const home = document.createElement("a");
+      home.href = "/assets/lesson.html?exams";
+      home.className = "home-btn";
+      home.setAttribute("aria-label", "Back to all exams");
+      home.innerHTML = "⌂ Exams";
+      document.body.appendChild(home);
+
+      const article = document.createElement("article");
+      article.innerHTML = marked.parse(body || "");
+      root.appendChild(article);
+
+      const examId = meta.exam_id || md.split("/").pop().replace(/\.md$/, "");
+      const passMark = sidecar.pass_mark != null ? sidecar.pass_mark : 70;
+      if (typeof ExamTracker !== "undefined") {
+        ExamTracker.init({ exam: examId, title: meta.title || examId });
+      }
+      if (typeof Exam !== "undefined") {
+        Exam.mount({ questions: questions, examId: examId,
+                     title: meta.title || examId, passMark: passMark });
+      }
+      scrollToHash();
+    }
+
+    // Scroll to the element named by location.hash, if any. Safe to call when
+    // there is no hash or the target doesn't exist (does nothing).
+    function scrollToHash() {
+      const h = location.hash;
+      if (!h || h.length < 2) return;
+      const el = document.getElementById(decodeURIComponent(h.slice(1)));
+      if (el) requestAnimationFrame(() =>
+        el.scrollIntoView({ behavior: "smooth", block: "start" }));
+    }
+
+    function global_DrillTracker() { return typeof DrillTracker !== "undefined"; }
+    function global_Drills() { return typeof Drills !== "undefined"; }
+    function global_Exam() { return typeof Exam !== "undefined"; }
+
+    (async function main() {
+      const root = document.getElementById("root");
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      const md = params.get("md");
+      const examId = params.get("exam");
+      if (params.has("exams")) return renderExamIndex(root);
+      if (examId) {
+        const path = await pathForExamId(examId);
+        if (path) return renderExam(root, path);
+        return root.appendChild(banner(
+          "No exam with id <code>" + examId + "</code>. See <code>?exams</code>."));
+      }
+      if (id) {
+        const path = await pathForId(id);
+        if (path) return renderLesson(root, path);
+        return root.appendChild(banner(
+          "No lesson with id <code>" + id + "</code>. Try <code>?id=0001</code> " +
+          "or open the index at <code>/assets/lesson.html</code>."));
+      }
+      if (md) {
+        if (md.startsWith("exams/")) return renderExam(root, md);
+        return renderLesson(root, md);
+      }
+      renderIndex(root);
+    })();
+  </script>
+</body>
+</html>
